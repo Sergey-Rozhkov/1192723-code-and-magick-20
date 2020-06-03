@@ -68,6 +68,14 @@ var generateWizards = function (limit) {
   return wizardsArr;
 };
 
+var renderSimilarBlockContent = function (wizards) {
+  var fragment = document.createDocumentFragment();
+  for (var j = 0; j < wizards.length; j++) {
+    fragment.appendChild(renderWizard(wizards[j]));
+  }
+  similarBlockList.appendChild(fragment);
+};
+
 var setupBlock = document.querySelector('.setup');
 setupBlock.classList.remove('hidden');
 
@@ -81,11 +89,7 @@ var similarWizardTemplate = document.querySelector('#similar-wizard-template')
 
 var wizards = generateWizards(4);
 
-var fragment = document.createDocumentFragment();
-for (var j = 0; j < wizards.length; j++) {
-  fragment.appendChild(renderWizard(wizards[j]));
-}
-similarBlockList.appendChild(fragment);
+renderSimilarBlockContent(wizards);
 
 similarBlock.classList.remove('hidden');
 

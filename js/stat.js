@@ -50,10 +50,7 @@ window.renderStatistics = function (ctx, players, times) {
     var startX = startLeft + (BAR_WIDTH + BAR_MARGIN) * i;
     renderText(ctx, startX, CLOUD_Y + CLOUD_HEIGHT - GAP - FONT_GAP, players[i]);
 
-    ctx.fillStyle = 'hsl(240, ' + randomInt(0, 100) + '%, 50%)';
-    if (players[i] === 'Вы') {
-      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-    }
+    ctx.fillStyle = players[i] === 'Вы' ? 'rgba(255, 0, 0, 1)' : 'hsl(240, ' + randomInt(0, 100) + '%, 50%)';
 
     var maxTime = getMaxElement(times);
     var barHeight = MAX_BAR_HEIGHT * times[i] / maxTime;

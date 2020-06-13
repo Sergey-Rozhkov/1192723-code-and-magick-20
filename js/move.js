@@ -42,7 +42,7 @@
       if (dragged) {
         var onClickPreventDefault = function (clickEvt) {
           clickEvt.preventDefault();
-          setupAvatarWrapperElement.removeEventListener('click', onClickPreventDefault)
+          setupAvatarWrapperElement.removeEventListener('click', onClickPreventDefault);
         };
         setupAvatarWrapperElement.addEventListener('click', onClickPreventDefault);
       }

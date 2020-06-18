@@ -48,6 +48,9 @@ window.constants = (function () {
   ];
 
   var WIZARD_SIMILAR_COUNT = 4;
+  var DATA_REQUEST_GET_URL = 'https://javascript.pages.academy/code-and-magick/data';
+  var DATA_REQUEST_POST_URL = 'https://javascript.pages.academy/code-and-magick';
+  var XHR_TIMEOUT = 5000;
 
   return {
     WIZARD_NAMES: WIZARD_NAMES,
@@ -55,6 +58,9 @@ window.constants = (function () {
     WIZARD_COAT_COLORS: WIZARD_COAT_COLORS,
     WIZARD_EYES_COLORS: WIZARD_EYES_COLORS,
     WIZARD_FIREBALL_COLORS: WIZARD_FIREBALL_COLORS,
-    WIZARD_SIMILAR_COUNT: WIZARD_SIMILAR_COUNT
+    WIZARD_SIMILAR_COUNT: WIZARD_SIMILAR_COUNT,
+    DATA_REQUEST_GET_URL: DATA_REQUEST_GET_URL,
+    DATA_REQUEST_POST_URL: DATA_REQUEST_POST_URL,
+    XHR_TIMEOUT: XHR_TIMEOUT
   };
 })();

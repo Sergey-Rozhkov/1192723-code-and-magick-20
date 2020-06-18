@@ -1,15 +1,16 @@
 'use strict';
 
 window.setup = (function () {
-  var setupFormElement = document.querySelector('.setup-wizard-form');
-  var setupSaveElement = document.querySelector('.setup-submit');
-  var setupWizardCoatElement = document.querySelector('.setup-wizard .wizard-coat');
-  var setupWizardEyesElement = document.querySelector('.setup-wizard .wizard-eyes');
-  var setupWizardFireballElement = document.querySelector('.setup-fireball-wrap');
+  var setupBlockElement = document.querySelector('.setup');
+  var setupFormElement = setupBlockElement.querySelector('.setup-wizard-form');
+  var setupSaveElement = setupBlockElement.querySelector('.setup-submit');
+  var setupWizardCoatElement = setupBlockElement.querySelector('.setup-wizard .wizard-coat');
+  var setupWizardEyesElement = setupBlockElement.querySelector('.setup-wizard .wizard-eyes');
+  var setupWizardFireballElement = setupBlockElement.querySelector('.setup-fireball-wrap');
 
-  var setupCoatColorInputElement = document.querySelector('input[name="coat-color"]');
-  var setupEyesColorInputElement = document.querySelector('input[name="eyes-color"]');
-  var setupFireballColorInputElement = document.querySelector('input[name="fireball-color"]');
+  var setupCoatColorInputElement = setupBlockElement.querySelector('input[name="coat-color"]');
+  var setupEyesColorInputElement = setupBlockElement.querySelector('input[name="eyes-color"]');
+  var setupFireballColorInputElement = setupBlockElement.querySelector('input[name="fireball-color"]');
 
   var renderWizard = function (wizard) {
     var wizardElement = similarWizardTemplateElement.cloneNode(true);
@@ -21,16 +22,24 @@ window.setup = (function () {
     return wizardElement;
   };
 
-  var generateWizards = function (limit) {
-    var wizardsArr = [];
-    for (var i = 0; i < limit; i++) {
-      wizardsArr.push({
-        name: window.utils.getRandomElement(window.constants.WIZARD_NAMES) + ' ' + window.utils.getRandomElement(window.constants.WIZARD_SURNAMES),
-        coatColor: window.utils.getRandomElement(window.constants.WIZARD_COAT_COLORS),
-        eyesColor: window.utils.getRandomElement(window.constants.WIZARD_EYES_COLORS),
-      });
-    }
-    return wizardsArr;
+  var successHandler = function (response) {
+    var wizardsArr = window.utils.getRandomElements(response, window.constants.WIZARD_SIMILAR_COUNT);
+
+    renderSimilarBlockContent(wizardsArr);
+
+    similarBlockElement.classList.remove('hidden');
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
   };
 
   var renderSimilarBlockContent = function (wizards) {
@@ -57,24 +66,28 @@ window.setup = (function () {
     setupFireballColorInputElement.value = fireballColor;
   };
 
-  var setupFormSubmit = function () {
+  var setupFormSubmit = function (evt) {
+    evt.preventDefault();
+
     if (!setupFormElement.checkValidity()) {
       return;
     }
 
-    setupFormElement.submit();
+    window.backend.save(new FormData(setupFormElement), function () {
+      setupBlockElement.classList.add('hidden');
+    });
   };
 
-  setupSaveElement.addEventListener('click', function () {
+  setupSaveElement.addEventListener('click', function (evt) {
     if (window.dialog.setupIsOpen()) {
-      setupFormSubmit();
+      setupFormSubmit(evt);
     }
   });
 
   setupSaveElement.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter' && setupSaveElement !== document.activeElement && window.dialog.setupIsOpen()) {
       evt.preventDefault();
-      setupFormSubmit();
+      setupFormSubmit(evt);
     }
   });
 
@@ -86,11 +99,7 @@ window.setup = (function () {
     .content
     .querySelector('.setup-similar-item');
 
-  var wizards = generateWizards(window.constants.WIZARD_SIMILAR_COUNT);
-
-  renderSimilarBlockContent(wizards);
-
-  similarBlockElement.classList.remove('hidden');
+  window.backend.load(successHandler, errorHandler);
 
   return {
     addEvents: function () {

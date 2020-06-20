@@ -1,13 +1,13 @@
 'use strict';
 
 window.backend = (function () {
-  var load = function (onLoad, onError) {
+  var prepareXRHRequest = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === window.constants.XHR_STATUS_SUCCESS) {
         onLoad(xhr.response);
       } else {
         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
@@ -24,23 +24,20 @@ window.backend = (function () {
 
     xhr.timeout = window.constants.XHR_TIMEOUT;
 
-    xhr.open('GET', window.constants.DATA_REQUEST_GET_URL);
+    return xhr;
+  };
+
+  var load = function (onLoad, onError) {
+    var xhr = prepareXRHRequest(onLoad, onError);
+
+    xhr.open('GET', window.constants.API_URL + '/data');
     xhr.send();
   };
 
   var save = function (data, onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
+    var xhr = prepareXRHRequest(onLoad, onError);
 
-    xhr.addEventListener('load', function () {
-      onLoad(xhr.response);
-    });
-
-    xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
-    });
-
-    xhr.open('POST', window.constants.DATA_REQUEST_POST_URL);
+    xhr.open('POST', window.constants.API_URL);
     xhr.send(data);
   };
 
